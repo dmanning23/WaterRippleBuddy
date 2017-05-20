@@ -40,16 +40,15 @@ namespace WaterRippleBuddyExample.DesktopGL
 		protected override void Initialize()
 		{
 			Resolution.SetDesiredResolution(1280, 720);
-			Resolution.SetScreenResolution(1280, 720, false);
+			Resolution.SetScreenResolution(1024, 768, false);
 
-			MouseInput = new MouseComponent(this, ResolutionBuddy.Resolution.ScreenToGameCoord);
+			MouseInput = new MouseComponent(this, Resolution.ScreenToGameCoord);
 
 			var debug = new DebugInputComponent(this, Resolution.TransformationMatrix);
 			debug.DrawOrder = 100;
 
 			_water = new WaterRippleComponent(this);
 			_water.DrawOrder = 101;
-			Components.Add(_water);
 
 			base.Initialize();
 		}
@@ -64,12 +63,16 @@ namespace WaterRippleBuddyExample.DesktopGL
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 			_texture = Content.Load<Texture2D>("Braid_screenshot8");
 
+			Resolution.ResetViewport();
+
 			PresentationParameters pp = GraphicsDevice.PresentationParameters;
+			int width = pp.BackBufferWidth;
+			int height = pp.BackBufferHeight;
 			SurfaceFormat format = pp.BackBufferFormat;
 			DepthFormat depthFormat = pp.DepthStencilFormat;
 
 			// create textures for reading back the backbuffer contents
-			sceneMap = new RenderTarget2D(GraphicsDevice, Resolution.ScreenArea.Width, Resolution.ScreenArea.Width, false, format, depthFormat);
+			sceneMap = new RenderTarget2D(GraphicsDevice, width, height, false, format, depthFormat);
 
 			_water.RenderTarget = sceneMap;
 		}
@@ -115,36 +118,27 @@ namespace WaterRippleBuddyExample.DesktopGL
 		{
 			GraphicsDevice.SetRenderTarget(sceneMap);
 
-			// Clear to Black
-			graphics.GraphicsDevice.Clear(Color.Black);
-
 			// Calculate Proper Viewport according to Aspect Ratio
 			Resolution.ResetViewport();
 
+			// Clear to Black
+			graphics.GraphicsDevice.Clear(Color.Black);
+
+			//draw a simple scene
 			spriteBatch.Begin(SpriteSortMode.Immediate,
 							  BlendState.AlphaBlend,
 							  null, null, null, null,
 							  Resolution.TransformationMatrix());
-
 			spriteBatch.Draw(_texture, Vector2.Zero, Color.White);
-
 			spriteBatch.End();
 
+			//Draw the rest of the game components
 			base.Draw(gameTime);
 
 			//finally, darw the completed scenemap rendertarget to the screen
 			GraphicsDevice.SetRenderTarget(null);
-			DrawFullscreenQuad(sceneMap, Resolution.ScreenArea.Width, Resolution.ScreenArea.Width, null);
-		}
-
-		/// <summary>
-		/// Helper for drawing a texture into the current rendertarget,
-		/// using a custom shader to apply postprocessing effects.
-		/// </summary>
-		void DrawFullscreenQuad(Texture2D texture, int width, int height, Effect effect)
-		{
-			spriteBatch.Begin(0, BlendState.Opaque, null, null, null, effect);
-			spriteBatch.Draw(texture, new Rectangle(0, 0, width, height), Color.White);
+			spriteBatch.Begin();
+			spriteBatch.Draw(sceneMap, Vector2.Zero, Color.White);
 			spriteBatch.End();
 		}
 	}

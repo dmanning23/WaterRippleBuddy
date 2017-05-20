@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ResolutionBuddy;
+using System.Collections.Generic;
 
 namespace WaterRippleBuddy
 {
@@ -15,15 +13,27 @@ namespace WaterRippleBuddy
 
 		Effect distortEffect;
 
-		public RenderTarget2D RenderTarget { private get; set; }
+		private Vector2 _renderTargetOrigin;
+		private RenderTarget2D _renderTarget;
+		public RenderTarget2D RenderTarget
+		{
+			private get
+			{
+				return _renderTarget;
+			}
+			set
+			{
+				_renderTarget = value;
+				_renderTargetOrigin = new Vector2(RenderTarget.Width / 2, RenderTarget.Height / 2);
+			}
+		}
 
 		Texture2D gradTexture;
 
-		Droplet droplet;
 		public float waveSpeed = 1.25f;
 		public float reflectionStrength = 1.7f;
-		public Color reflectionColor = Color.Gray;
-		public float refractionStrength = 2.5f;
+		public Color reflectionColor = new Color(0, 0, 100);
+		public float refractionStrength = 2.3f;
 		public float dropInterval = 1.5f;
 
 		List<Droplet> Drops { get; set; }
@@ -35,6 +45,9 @@ namespace WaterRippleBuddy
 		public WaterRippleComponent(Game game) : base(game)
 		{
 			Drops = new List<Droplet>();
+
+			Game.Components.Add(this);
+			Game.Services.AddService<IWaterRipple>(this);
 		}
 
 		public override void Initialize()
@@ -109,15 +122,12 @@ namespace WaterRippleBuddy
 			{
 				var gd1 = GraphicsDevice;
 
-				Viewport viewport = GraphicsDevice.Viewport;
-
-				float aspect = Resolution.ScreenArea.Width / Resolution.ScreenArea.Height;
+				float aspect = gd1.Viewport.AspectRatio;
 
 				Matrix projection;
-				Matrix.CreateOrthographicOffCenter(0, Resolution.ScreenArea.Width, Resolution.ScreenArea.Height, 0, 0, -1, out projection);
-				Matrix _matrix = Matrix.Identity;//matrix use in spriteBatch.Draw
-
-				Matrix.Multiply(ref _matrix, ref projection, out projection);
+				Matrix.CreateOrthographicOffCenter(0, gd1.Viewport.Width, gd1.Viewport.Height, 0, 0, -1, out projection);
+				Matrix matrix = Resolution.TransformationMatrix();//matrix use in spriteBatch.Draw
+				Matrix.Multiply(ref matrix, ref projection, out projection);
 
 				distortEffect.Parameters["MatrixTransform"].SetValue(projection);
 				distortEffect.Parameters["GradTexture"].SetValue(gradTexture);
@@ -126,20 +136,14 @@ namespace WaterRippleBuddy
 				distortEffect.Parameters["_Params2"].SetValue(new Vector4(1, 1 / aspect, refractionStrength, reflectionStrength));    // [ 1, 1/aspect, refraction, reflection ]
 
 				//Render the water ripple on top of the sceneMap rendertarget
-				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque, null, DepthStencilState.None, null, distortEffect, Resolution.TransformationMatrix());
-
-				//spriteBatch.Begin(SpriteSortMode.Immediate,
-				//			  BlendState.AlphaBlend,
-				//			  null, null, null, null,
-				//			  Resolution.TransformationMatrix());
+				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, DepthStencilState.None, null, distortEffect, Resolution.TransformationMatrix());
 
 				for (int i = 0; i < Drops.Count; i++)
 				{
 					Vector2 scaleFactor = new Vector2(0.5f, 0.5f);
-					Vector2 origin = new Vector2(Resolution.ScreenArea.Width / 2, Resolution.ScreenArea.Height / 2);
 
 					distortEffect.Parameters["_Drop1"].SetValue(Drops[i].MakeShaderParameter(aspect));
-					spriteBatch.Draw(RenderTarget, Drops[i].Position, null, Color.White, 0f, origin, scaleFactor, SpriteEffects.None, 0);
+					spriteBatch.Draw(RenderTarget, Drops[i].Position, null, Color.White, 0f, _renderTargetOrigin, scaleFactor, SpriteEffects.None, 0);
 				}
 
 				spriteBatch.End();
