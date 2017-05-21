@@ -136,8 +136,6 @@ namespace WaterRippleBuddy
 				distortEffect.Parameters["Scale"].SetValue(1f / waveSpeed);
 				distortEffect.Parameters["RefractionStrength"].SetValue(refractionStrength);
 				distortEffect.Parameters["ReflectionStrength"].SetValue(reflectionStrength);
-				
-				distortEffect.Parameters["_Params2"].SetValue(new Vector4(1, 1 / aspect, refractionStrength, reflectionStrength));    // [ 1, 1/aspect, refraction, reflection ]
 
 				//Render the water ripple on top of the sceneMap rendertarget
 				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, DepthStencilState.None, null, distortEffect, Resolution.TransformationMatrix());

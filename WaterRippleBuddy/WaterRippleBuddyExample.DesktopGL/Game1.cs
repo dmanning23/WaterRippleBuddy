@@ -22,7 +22,7 @@ namespace WaterRippleBuddyExample.DesktopGL
 		/// <summary>
 		/// A texture that will be used to draw a simple scnene
 		/// </summary>
-		Texture2D _texture;
+		Texture2D _background;
 
 		/// <summary>
 		/// The main render target we are going to use instead of drawing straight to the screen
@@ -57,7 +57,7 @@ namespace WaterRippleBuddyExample.DesktopGL
 		{
 			//Setup for reolution independent rendering
 			Resolution.SetDesiredResolution(1280, 720);
-			Resolution.SetScreenResolution(1280, 720, false);
+			Resolution.SetScreenResolution(1024,768, false);
 
 			//Create the input things for listening for mouse clicks
 			MouseInput = new MouseComponent(this, Resolution.ScreenToGameCoord);
@@ -79,7 +79,7 @@ namespace WaterRippleBuddyExample.DesktopGL
 		{
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch(GraphicsDevice);
-			_texture = Content.Load<Texture2D>("Braid_screenshot8");
+			_background = Content.Load<Texture2D>("Braid_screenshot8");
 
 			Resolution.ResetViewport();
 
@@ -146,7 +146,7 @@ namespace WaterRippleBuddyExample.DesktopGL
 							  BlendState.AlphaBlend,
 							  null, null, null, null,
 							  Resolution.TransformationMatrix());
-			spriteBatch.Draw(_texture, Vector2.Zero, Color.White);
+			spriteBatch.Draw(_background, Vector2.Zero, Color.White);
 			spriteBatch.End();
 
 			//Draw the rest of the game components

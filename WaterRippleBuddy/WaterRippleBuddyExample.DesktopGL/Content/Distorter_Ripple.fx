@@ -1,12 +1,11 @@
 
 //http://gamedev.stackexchange.com/questions/18201/wave-ripple-effect
 
-matrix	MatrixTransform;
+matrix MatrixTransform;
 float Scale;
 float RefractionStrength;
 float ReflectionStrength;
 float Aspect;
-float4 _Params2;    // [ 1, 1/aspect, refraction, reflection ]
 
 float3 _Drop1;
 
@@ -88,7 +87,8 @@ float4 PixelShaderFunction(VertexShaderOutput input) : SV_Target
 	dw *= multiplier;
 
 	//UV
-	float2 duv = dw * _Params2.xy * 0.2f * RefractionStrength;
+	float2 inverseAspectRatio = float2(1, 1 / Aspect);
+	float2 duv = dw * inverseAspectRatio * 0.2f * RefractionStrength;
 
 	//Reflexion
 	float fr = pow(length(dw) * 3 * ReflectionStrength, 3);
