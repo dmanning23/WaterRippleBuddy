@@ -13,14 +13,30 @@ namespace WaterRippleBuddyExample.DesktopGL
 	/// </summary>
 	public class Game1 : Game
 	{
+		/// <summary>
+		/// xna junk
+		/// </summary>
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
+
+		/// <summary>
+		/// A texture that will be used to draw a simple scnene
+		/// </summary>
 		Texture2D _texture;
 
+		/// <summary>
+		/// The main render target we are going to use instead of drawing straight to the screen
+		/// </summary>
 		RenderTarget2D sceneMap;
 
+		/// <summary>
+		/// Component used to listen for mouse input
+		/// </summary>
 		MouseComponent MouseInput;
 
+		/// <summary>
+		/// The componenent used to draw ater ripples
+		/// </summary>
 		WaterRippleComponent _water;
 
 		public Game1()
@@ -28,7 +44,7 @@ namespace WaterRippleBuddyExample.DesktopGL
 			graphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
 			Resolution.Init(graphics);
-			this.IsMouseVisible = true;
+			IsMouseVisible = true;
 		}
 
 		/// <summary>
@@ -39,14 +55,16 @@ namespace WaterRippleBuddyExample.DesktopGL
 		/// </summary>
 		protected override void Initialize()
 		{
+			//Setup for reolution independent rendering
 			Resolution.SetDesiredResolution(1280, 720);
-			Resolution.SetScreenResolution(1024, 768, false);
+			Resolution.SetScreenResolution(1280, 720, false);
 
+			//Create the input things for listening for mouse clicks
 			MouseInput = new MouseComponent(this, Resolution.ScreenToGameCoord);
-
 			var debug = new DebugInputComponent(this, Resolution.TransformationMatrix);
 			debug.DrawOrder = 100;
 
+			//Create the water ripple component
 			_water = new WaterRippleComponent(this);
 			_water.DrawOrder = 101;
 
@@ -65,15 +83,15 @@ namespace WaterRippleBuddyExample.DesktopGL
 
 			Resolution.ResetViewport();
 
+			//Create the render target to cover the whole screen
 			PresentationParameters pp = GraphicsDevice.PresentationParameters;
 			int width = pp.BackBufferWidth;
 			int height = pp.BackBufferHeight;
 			SurfaceFormat format = pp.BackBufferFormat;
 			DepthFormat depthFormat = pp.DepthStencilFormat;
-
-			// create textures for reading back the backbuffer contents
 			sceneMap = new RenderTarget2D(GraphicsDevice, width, height, false, format, depthFormat);
 
+			//Make sure the water ripples use the correct render target
 			_water.RenderTarget = sceneMap;
 		}
 
@@ -100,8 +118,7 @@ namespace WaterRippleBuddyExample.DesktopGL
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
 				Exit();
 
-			// TODO: Add your update logic here
-
+			//Add a water ripple drop whenever the user clicks the window
 			if (MouseInput.MouseManager.LMouseClick)
 			{
 				_water.AddDrop(MouseInput.MousePos);

@@ -2,8 +2,10 @@
 //http://gamedev.stackexchange.com/questions/18201/wave-ripple-effect
 
 matrix	MatrixTransform;
-
-float4 _Params1;    // [ aspect, 1, scale, 0 ]
+float Scale;
+float RefractionStrength;
+float ReflectionStrength;
+float Aspect;
 float4 _Params2;    // [ 1, 1/aspect, refraction, reflection ]
 
 float3 _Drop1;
@@ -52,7 +54,7 @@ VertexShaderOutput VertexShaderFunction(float4 position:POSITION, float2 texcoor
 float wave(float2 position, float2 origin, float time)
 {
 	float d = length(position - origin);
-	float t = time - d * _Params1.z;
+	float t = time - d * Scale;
 
 	return (tex2D(GradTextureSampler, float2(t, 0)).a - 0.5f) * 2;
 }
@@ -72,29 +74,30 @@ float4 PixelShaderFunction(VertexShaderOutput input) : SV_Target
 	//Compute Displacement from gradiant
 	const float2 dx = float2(0.01f, 0);
 	const float2 dy = float2(0, 0.01f);
+	float2 aspectRatio = float2(Aspect, 1);
 
-	float2 p = input.TexCoord * _Params1.xy;
+	float2 p = input.TexCoord * aspectRatio;
 
 	float w = allwave(p);
 
 	float2 dw = float2(allwave(p + dx) - w, allwave(p + dy) - w);
-	
+
 	//Attenuation
 	float distance = length(p - _Drop1.xy) * 1.5f;
 	float multiplier = (distance < 1.0) ? ((distance - 1.0)*(distance - 1.0)) : 0.0;
 	dw *= multiplier;
 
 	//UV
-	float2 duv = dw * _Params2.xy * 0.2f * _Params2.z;
+	float2 duv = dw * _Params2.xy * 0.2f * RefractionStrength;
 
 	//Reflexion
-	float fr = pow(length(dw) * 3 * _Params2.w, 3);
+	float fr = pow(length(dw) * 3 * ReflectionStrength, 3);
 
 	//Displacement 
 	float4 c = tex2D(textureMapSampler, screen + duv);
 
 	float4 texColor = lerp(c, _Reflection, fr);
-	
+
 	return texColor;
 }
 
