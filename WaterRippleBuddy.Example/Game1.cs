@@ -118,7 +118,6 @@ public class Game1 : Game
         //Draw the rest of the game components, including the WaterRippleComponent
         base.Draw(gameTime);
 
-        // //finally, draw the completed scenemap rendertarget to the screen
         GraphicsDevice.SetRenderTarget(null);
         _spriteBatch.Begin();
         _spriteBatch.Draw(_sceneTarget, Vector2.Zero, Color.White);
