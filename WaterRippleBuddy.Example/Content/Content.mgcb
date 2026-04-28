@@ -31,3 +31,8 @@
 /processorParam:DebugMode=Auto
 /build:Distorter_Ripple.fx
 
+#begin Distorter_Ripple_Old.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Distorter_Ripple_Old.fx
