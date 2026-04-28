@@ -105,21 +105,24 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        // ── Step 1: Render the scene into the off-screen target ──────────────
         GraphicsDevice.SetRenderTarget(_sceneTarget);
-        GraphicsDevice.Clear(Color.Black);
 
+        // Clear to Black
+        _graphics.GraphicsDevice.Clear(Color.Black);
+
+        //draw a simple scene
         _spriteBatch.Begin();
         _spriteBatch.Draw(_background, new Rectangle(0, 0, ScreenWidth, ScreenHeight), Color.White);
         _spriteBatch.End();
 
-        // ── Step 2: Restore the back buffer ─────────────────────────────────
-        // WaterRippleComponent will draw the distorted result to the back
-        // buffer when base.Draw calls it through the Components list.
-        GraphicsDevice.SetRenderTarget(null);
-        GraphicsDevice.Clear(Color.Black);  // clear back buffer before component draws
-
+        //Draw the rest of the game components, including the WaterRippleComponent
         base.Draw(gameTime);
+
+        // //finally, draw the completed scenemap rendertarget to the screen
+        GraphicsDevice.SetRenderTarget(null);
+        _spriteBatch.Begin();
+        _spriteBatch.Draw(_sceneTarget, Vector2.Zero, Color.White);
+        _spriteBatch.End();
     }
 
     protected override void UnloadContent()
