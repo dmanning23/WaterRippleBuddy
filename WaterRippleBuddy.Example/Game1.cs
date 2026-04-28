@@ -51,12 +51,11 @@ public class Game1 : Game
             // render target is populated before the component reads it.
             DrawOrder = 100,
 
-            // Tweak these to taste:
             WaveSpeed = 1.5f,
             WaveFrequency = 40f,
             RefractionStrength = 0.03f,
             ReflectionStrength = 0.25f,
-            ReflectionColor = new Color(200, 220, 255),  // soft blue highlight
+            ReflectionColor = new Color(200, 220, 255),
             DropletLifetime = 2.5f
         };
 

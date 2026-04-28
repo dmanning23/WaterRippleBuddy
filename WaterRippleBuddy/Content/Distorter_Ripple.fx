@@ -12,10 +12,16 @@
 // Add it to your Content/Content.mgcb with an EffectImporter/EffectProcessor.
 // ============================================================================
 
-#define MAX_DROPLETS 16
+#if OPENGL
+    #define SV_POSITION POSITION
+    #define VS_SHADERMODEL vs_3_0
+    #define PS_SHADERMODEL ps_3_0
+#else
+    #define VS_SHADERMODEL vs_4_0_level_9_1
+    #define PS_SHADERMODEL ps_4_0_level_9_1
+#endif
 
-// ── Transforms (set automatically by SpriteBatch) ───────────────────────────
-float4x4 MatrixTransform;
+#define MAX_DROPLETS 16
 
 // ── Droplet data ─────────────────────────────────────────────────────────────
 // Each element: xy = normalized screen position [0,1],
@@ -44,33 +50,16 @@ sampler2D SceneSampler = sampler_state
     MipFilter = Linear;
 };
 
-// ── Vertex / pixel structs ───────────────────────────────────────────────────
-struct VertexInput
-{
-    float4 Position : POSITION0;
-    float4 Color    : COLOR0;
-    float2 TexCoord : TEXCOORD0;
-};
-
-struct PixelInput
+// ── Pixel shader input (matches SpriteBatch vertex output) ───────────────────
+struct VertexShaderOutput
 {
     float4 Position : SV_POSITION;
     float4 Color    : COLOR0;
     float2 TexCoord : TEXCOORD0;
 };
 
-// ── Vertex shader ────────────────────────────────────────────────────────────
-PixelInput VS(VertexInput input)
-{
-    PixelInput output;
-    output.Position = mul(input.Position, MatrixTransform);
-    output.Color    = input.Color;
-    output.TexCoord = input.TexCoord;
-    return output;
-}
-
 // ── Pixel shader ─────────────────────────────────────────────────────────────
-float4 PS(PixelInput input) : COLOR0
+float4 PS(VertexShaderOutput input) : COLOR
 {
     float2 uv = input.TexCoord;
 
@@ -128,13 +117,7 @@ float4 PS(PixelInput input) : COLOR0
 technique WaterRipple
 {
     pass P0
-	{
-#if SM4
-		VertexShader = compile vs_4_0_level_9_1 VS();
-		PixelShader = compile ps_4_0_level_9_1 PS();
-#else
-		VertexShader = compile vs_3_0 VS();
-		PixelShader = compile ps_3_0 PS();
-#endif
-	}
+    {
+        PixelShader = compile PS_SHADERMODEL PS();
+    }
 }
