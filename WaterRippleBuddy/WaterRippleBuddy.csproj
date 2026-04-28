@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>WaterRippleBuddy</RootNamespace>
+        <AssemblyName>WaterRippleBuddy</AssemblyName>
+        <Version>2.0.0</Version>
+        <Authors>Dan Manning</Authors>
+        <Description>MonoGame DrawableGameComponent for animated water ripple distortion effects.</Description>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!--
+        MonoGame.Framework.DesktopGL is referenced here so the library types resolve.
+        Consumers that target a different MonoGame platform (WindowsDX, etc.) should
+        swap this reference in their own project.
+        -->
+        <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.*" />
+    </ItemGroup>
+
+    <!--
+        Ship the shader source alongside the library so consumers can drop it into
+        their own content pipeline.  It is NOT compiled here — compilation is the
+        consuming game's responsibility via MonoGame.Content.Builder.Task.
+    -->
+    <ItemGroup>
+        <None Include="Content\Distorter_Ripple.fx">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+</Project>

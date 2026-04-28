@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/danmanning/.nuget/**)",
+      "Read(//Users/danmanning/**)",
+      "Read(//private/tmp/**)",
+      "Bash(dotnet tool *)",
+      "Bash(ilspycmd \"/Users/danmanning/.nuget/packages/monogame.framework.desktopgl/3.8.4.1/lib/net8.0/MonoGame.Framework.dll\" -t \"Microsoft.Xna.Framework.DrawableGameComponent\")",
+      "Bash(python3 -c ' *)",
+      "Bash(dotnet build *)",
+      "Bash(dotnet-ildasm \"/Users/danmanning/.nuget/packages/monogame.framework.desktopgl/3.8.4.1/lib/net8.0/MonoGame.Framework.dll\" --type \"Microsoft.Xna.Framework.DrawableGameComponent\")",
+      "Bash(dotnet-ildasm \"/Users/danmanning/.nuget/packages/monogame.framework.desktopgl/3.8.4.1/lib/net8.0/MonoGame.Framework.dll\")",
+      "Bash(dotnet script *)",
+      "Bash(xxd /Users/danmanning/Documents/Source/WaterRippleBuddy/WaterRippleBuddy.Example/bin/Debug/net8.0/Content/Distorter_Ripple.xnb)",
+      "Bash(unzip -l \"/Users/danmanning/.nuget/packages/monogame.framework.desktopgl/3.8.4.1/monogame.framework.desktopgl.3.8.4.1.nupkg\")"
+    ]
+  }
+}
