@@ -2,13 +2,21 @@
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
+        <PackageId>WaterRippleBuddy</PackageId>
+        <Version>5.0.0</Version>
+        <Title>WaterRippleBuddy</Title>
+        <Authors>dmanning23</Authors>
+        <description>MonoGame DrawableGameComponent for animated water ripple distortion effects.</description>
+        <PackageProjectUrl>https://github.com/dmanning23/WaterRippleBuddy</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/dmanning23/WaterRippleBuddy</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>monogame</PackageTags>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <RootNamespace>WaterRippleBuddy</RootNamespace>
-        <AssemblyName>WaterRippleBuddy</AssemblyName>
-        <Version>2.0.0</Version>
-        <Authors>Dan Manning</Authors>
-        <Description>MonoGame DrawableGameComponent for animated water ripple distortion effects.</Description>
     </PropertyGroup>
 
     <ItemGroup>

@@ -117,3 +117,5 @@ Backup*/
 UpgradeLog*.XML
 
 .claude/
+.superpowers/
+docs/
